@@ -105,17 +105,31 @@ st.subheader("🔍 Feature importance (SHAP)")
 @st.cache_data
 def compute_shap():
     explainer = shap.TreeExplainer(model)
-    sv = explainer.shap_values(X_test)
 
-    if isinstance(sv, list):
-        sv = sv[1]
+    shap_values = explainer.shap_values(X_test)
 
-    mean_abs = np.abs(sv).mean(axis=0)
+    # Handle binary classification output
+    if isinstance(shap_values, list):
+        shap_values = shap_values[1]
+
+    shap_values = np.array(shap_values)
+
+    # Handle newer SHAP versions returning 3D arrays
+    if len(shap_values.shape) == 3:
+        shap_values = shap_values[:, :, 1]
+
+    mean_abs = np.abs(shap_values).mean(axis=0)
 
     importance = pd.DataFrame({
-        "Feature": X_test.columns,
-        "SHAP value": mean_abs
-    }).sort_values("SHAP value", ascending=False).head(15)
+        "Feature": list(X_test.columns),
+        "SHAP value": mean_abs.flatten()
+    })
+
+    importance = (
+        importance
+        .sort_values("SHAP value", ascending=False)
+        .head(15)
+    )
 
     return importance
 
@@ -143,10 +157,11 @@ try:
 
 except Exception as e:
     st.warning(
-        "SHAP feature importance is temporarily unavailable on this deployment."
+        "SHAP feature importance is temporarily unavailable."
     )
 
-    st.expander("Error Details").write(str(e))
+    with st.expander("Show Error Details"):
+        st.code(str(e))
 
 # ── High-risk customer table ───────────────────────────────
 st.markdown("---")
