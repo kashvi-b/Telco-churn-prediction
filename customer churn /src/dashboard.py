@@ -98,70 +98,13 @@ with col_b:
     st.plotly_chart(fig2, use_container_width=True)
 
 # ── SHAP feature importance ────────────────────────────────
-# ── SHAP feature importance ────────────────────────────────
+# ── Feature Importance ────────────────────────────────
 st.markdown("---")
-st.subheader("🔍 Feature importance (SHAP)")
+st.subheader("🔍 Feature Importance")
 
-@st.cache_data
-def compute_shap():
-    explainer = shap.TreeExplainer(model)
-
-    shap_values = explainer.shap_values(X_test)
-
-    # Handle binary classification output
-    if isinstance(shap_values, list):
-        shap_values = shap_values[1]
-
-    shap_values = np.array(shap_values)
-
-    # Handle newer SHAP versions returning 3D arrays
-    if len(shap_values.shape) == 3:
-        shap_values = shap_values[:, :, 1]
-
-    mean_abs = np.abs(shap_values).mean(axis=0)
-
-    importance = pd.DataFrame({
-        "Feature": list(X_test.columns),
-        "SHAP value": mean_abs.flatten()
-    })
-
-    importance = (
-        importance
-        .sort_values("SHAP value", ascending=False)
-        .head(15)
-    )
-
-    return importance
-
-try:
-    with st.spinner("Computing SHAP values..."):
-        importance = compute_shap()
-
-    fig3 = px.bar(
-        importance.sort_values("SHAP value"),
-        x="SHAP value",
-        y="Feature",
-        orientation="h",
-        color="SHAP value",
-        color_continuous_scale="Blues"
-    )
-
-    fig3.update_layout(
-        height=420,
-        showlegend=False,
-        xaxis_title="Mean |SHAP value|",
-        yaxis_title=""
-    )
-
-    st.plotly_chart(fig3, use_container_width=True)
-
-except Exception as e:
-    st.warning(
-        "SHAP feature importance is temporarily unavailable."
-    )
-
-    with st.expander("Show Error Details"):
-        st.code(str(e))
+st.info(
+    "Feature importance visualization is disabled in the cloud deployment version."
+)
 
 # ── High-risk customer table ───────────────────────────────
 st.markdown("---")
