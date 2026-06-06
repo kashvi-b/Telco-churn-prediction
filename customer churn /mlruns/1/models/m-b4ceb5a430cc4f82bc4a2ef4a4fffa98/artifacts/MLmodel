@@ -1,0 +1,23 @@
+artifact_path: /Users/kashvi/Desktop/customer_churn/mlruns/1/models/m-b4ceb5a430cc4f82bc4a2ef4a4fffa98/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.14.3
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+mlflow_version: 3.10.1
+model_id: m-b4ceb5a430cc4f82bc4a2ef4a4fffa98
+model_size_bytes: 1020925
+model_uuid: m-b4ceb5a430cc4f82bc4a2ef4a4fffa98
+prompts: null
+run_id: 9a3fa0ad823242f2a83520cf09c2d849
+utc_time_created: '2026-03-15 15:43:54.550629'
